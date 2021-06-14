@@ -2,7 +2,7 @@ import cv2
 import sys
 import os 
 import tensorrt as trt
-import pycuda.autoinit
+# import pycuda.autoinit
 import pycuda.driver as cuda
 import numpy as np
 import math
@@ -49,7 +49,7 @@ class Processor():
             [[116,90], [156,198], [373,326]],
         ])
         self.nl = len(anchors)
-        self.nc = 80 # classes
+        self.nc = 80 # classes.txt
         self.no = self.nc + 5 # outputs per anchor
         self.na = len(anchors[0])
         a = anchors.copy().astype(np.float32)
@@ -154,14 +154,14 @@ class Processor():
 
     def post_process(self, outputs, conf_thres=0.5):
         """
-        Transforms raw output into boxes, confs, classes
+        Transforms raw output into boxes, confs, classes.txt
         Applies NMS thresholding on bounding boxes and confs
         Parameters:
             output: raw output tensor
         Returns:
             boxes: x1,y1,x2,y2 tensor (dets, 4)
             confs: class * obj prob tensor (dets, 1) 
-            classes: class type tensor (dets, 1)
+            classes.txt: class type tensor (dets, 1)
         """
         scaled = []
         grids = []

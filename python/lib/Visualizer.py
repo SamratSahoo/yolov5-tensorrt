@@ -9,16 +9,16 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mimg
 from PIL import Image
 
-from classes import coco
+from classes import labels
 
 class Visualizer():
     def __init__(self):
-        self.color_list = self.gen_colors(coco)
+        self.color_list = self.gen_colors(labels)
     
     def gen_colors(self, classes):
         """
             generate unique hues for each class and convert to bgr
-            classes -- list -- class names (80 for coco dataset)
+            classes.txt -- list -- class names (80 for coco dataset)
             -> list
         """
         hsvs = []
@@ -117,7 +117,7 @@ class Visualizer():
         for grid in grids:
             _, _, width, height, _ = grid.shape
             px_step = 640 // width
-            window_name = 'classes {}'.format(height)
+            window_name = 'classes.txt {}'.format(height)
             cv2.namedWindow(window_name)
             copy = img.copy()
             for xi in range(width):
@@ -168,7 +168,7 @@ class Visualizer():
             # draw rectangle
             x1, y1, x2, y2 = box
             conf = conf[0]
-            cls_name = coco[cls]
+            cls_name = labels[cls]
             color = self.color_list[cls]
             cv2.rectangle(overlay, (x1, y1), (x2, y2), color, -1)
             # draw text

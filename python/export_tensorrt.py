@@ -7,6 +7,7 @@ takes in onnx model
 converts to tensorrt
 """
 
+
 def cli():
     desc = 'compile Onnx model to TensorRT'
     parser = argparse.ArgumentParser(description=desc)
@@ -26,10 +27,11 @@ def cli():
         'output': output
     }
 
+
 if __name__ == '__main__':
     args = cli()
-    model = 'lib/models/{}'.format(args['model'])
-    output = 'lib/models/{}'.format(args['output'])
+    model = args['model']
+    output = args['output']
     logger = trt.Logger(trt.Logger.VERBOSE)
     EXPLICIT_BATCH = []
     print('trt version', trt.__version__)
@@ -37,7 +39,8 @@ if __name__ == '__main__':
         EXPLICIT_BATCH.append(
             1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH))
 
-    with trt.Builder(logger) as builder, builder.create_network(*EXPLICIT_BATCH) as network, trt.OnnxParser(network, logger) as parser:
+    with trt.Builder(logger) as builder, builder.create_network(*EXPLICIT_BATCH) as network, trt.OnnxParser(network,
+                                                                                                            logger) as parser:
         builder.max_workspace_size = 1 << 28
         builder.max_batch_size = 1
         if args['fp'] == '16':
@@ -47,7 +50,7 @@ if __name__ == '__main__':
             if not parser.parse(f.read()):
                 for error in range(parser.num_errors):
                     print(parser.get_error(error))
-            
+
         # reshape input from 32 to 1
         shape = list(network.get_input(0).shape)
         engine = builder.build_cuda_engine(network)
